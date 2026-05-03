@@ -59,8 +59,8 @@ def _clean_dataframe(df: pd.DataFrame, numeric_cols: list[str] | None = None) ->
     # 2. Strip and lowercase string columns
     for col in df.select_dtypes(include=["object"]).columns:
         df[col] = df[col].astype(str).str.strip().str.lower()
-        # Replace literal "nan" strings introduced by astype(str)
-        df[col] = df[col].replace("nan", pd.NA)
+        # Replace literal null-like strings introduced by astype(str)
+        df[col] = df[col].replace(["nan", "none"], pd.NA)
 
     # 3. Fill nulls
     if numeric_cols:
