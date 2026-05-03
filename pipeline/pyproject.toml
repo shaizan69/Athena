@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "pipeline"
+version = "0.1.0"
+description = "Dagster-based data pipeline implementing Bronze/Silver/Gold medallion architecture with change detection and per-client configuration."
+authors = ["Data Engineering Team"]
+readme = "README.md"
+packages = [{include = "pipeline"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+dagster = "^1.7.0"
+dagster-webserver = "^1.7.0"
+pandas = "^2.2.0"
+sqlalchemy = "^2.0.0"
+psycopg2-binary = "^2.9.9"
+pyyaml = "^6.0.1"
+connectors = {path = "../connectors", develop = true}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+
+[tool.dagster]
+module_name = "pipeline.definitions"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

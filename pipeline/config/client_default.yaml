@@ -1,0 +1,14 @@
+client_name: "default_client"
+postgres:
+  connection_string: "postgresql://user:password@localhost:5432/dataplatform"
+  schemas: ["bronze", "silver", "gold"]
+oracle:
+  data_dir: "data/"
+pipelines:
+  customers: true
+  transactions: true
+  accounts: true
+  risk_flags: true
+schedule:
+  cron: "0 6 * * *"
+  timezone: "UTC"
