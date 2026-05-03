@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
+from sqlalchemy import Column, MetaData, String, Table
 
 
 def _make_upsert_testable():
@@ -47,14 +48,19 @@ class TestChangeDetection:
         with patch("connectors.postgres.inspect") as mock_inspect:
             mock_inspect.return_value.has_table.return_value = True
 
-            mock_meta = MagicMock()
-            mock_table = MagicMock()
-            mock_col = MagicMock()
-            mock_col.__eq__ = MagicMock(return_value=True)
-            mock_table.c.__getitem__ = MagicMock(return_value=mock_col)
-            mock_meta.tables = {"bronze.customers": mock_table}
+            # Use a real Table object but mock the Metadata reflection
+            meta = MetaData(schema="bronze")
+            real_table = Table(
+                "customers", meta,
+                Column("customer_id", String, primary_key=True),
+                Column("full_name", String),
+                Column("row_hash", String),
+            )
 
-            with patch("connectors.postgres.MetaData", return_value=mock_meta):
+            with patch("connectors.postgres.MetaData") as mock_meta_class:
+                mock_meta_instance = mock_meta_class.return_value
+                mock_meta_instance.tables = {"bronze.customers": real_table}
+                
                 mock_conn = MagicMock()
                 pg._engine.begin.return_value.__enter__ = MagicMock(return_value=mock_conn)
                 pg._engine.begin.return_value.__exit__ = MagicMock(return_value=False)
