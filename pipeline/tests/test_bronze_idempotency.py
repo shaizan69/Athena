@@ -95,8 +95,12 @@ class TestBronzeIdempotency:
         # The upsert mock should have skipped all rows
         upsert_return = context.resources.postgres.upsert.return_value
         # Since we're using side_effect, check the actual call result
+        final_df = call_args.kwargs.get("df")
+        if final_df is None:
+            final_df = call_args[1].get("df") if len(call_args) > 1 else source_df
+            
         actual_counts = context.resources.postgres.upsert(
-            df=call_args.kwargs.get("df", call_args[1].get("df") if len(call_args) > 1 else None) or source_df,
+            df=final_df,
             table="customers",
             key_cols=["customer_id"],
             hash_col="row_hash",
