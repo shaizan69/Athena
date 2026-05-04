@@ -91,9 +91,4 @@ dagster dev
 ```
 Open `http://localhost:3000` in your browser. From here, you can visualize the graph, acknowledge Asset Checks, and click **Materialize All** to run the pipeline!
 
----
 
-## 📅 Tradeoffs & If I Had More Time
-
-1. **dbt for Transformations:** Currently, the Silver and Gold transformations are written in Pandas to limit infrastructure overhead for this take-home. For a real production architecture, I would decouple the Python ingestion from the SQL aggregations by implementing **dbt** (orchestrated by `dagster-dbt`) for the Gold layer.
-2. **Partitioning:** If these datasets continue to grow, the daily schedule should be replaced by a Daily Date Partition model. Partitioned Assets allow you to only process "yesterday's" data, dramatically speeding up historical backfills and lowering compute costs.
